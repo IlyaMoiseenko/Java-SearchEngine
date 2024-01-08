@@ -1,7 +1,7 @@
 package by.moiseenko.javasearchengine.domain;
 
 /*
-    @author Ilya Moiseenko on 3.01.24
+    @author Ilya Moiseenko on 8.01.24
 */
 
 import jakarta.persistence.*;
@@ -17,8 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tb_site")
-public class Site {
+@Table(name = "tb_page")
+public class Page {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,13 +27,10 @@ public class Site {
     @Column(name = "url", nullable = false, unique = true)
     private String url;
 
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
+    @OneToMany(mappedBy = "page", cascade = CascadeType.ALL)
+    private List<Title> titles;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User owner;
-
-    @OneToMany(mappedBy = "site")
-    private List<Page> pages;
+    @JoinColumn(name = "site_id", referencedColumnName = "id")
+    private Site site;
 }
