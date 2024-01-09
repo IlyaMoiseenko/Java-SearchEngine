@@ -24,6 +24,7 @@ public class SiteMapper {
         return SiteResponse
                 .builder()
                 .name(site.getName())
+                .indexingStatus(site.getIndexingStatus())
                 .build();
     }
 }
