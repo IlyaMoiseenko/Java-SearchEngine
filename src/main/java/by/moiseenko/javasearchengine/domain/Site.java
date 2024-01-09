@@ -36,4 +36,8 @@ public class Site {
 
     @OneToMany(mappedBy = "site")
     private List<Page> pages;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "indexing_status")
+    private IndexingStatus indexingStatus;
 }
