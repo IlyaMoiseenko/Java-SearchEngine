@@ -13,9 +13,9 @@ import lombok.*;
 @AllArgsConstructor
 public class SiteRequest {
 
-    @NotNull
+    @NotNull(message = "The field should not be empty")
     private String url;
 
-    @NotNull
+    @NotNull(message = "The field should not be empty")
     private String name;
 }

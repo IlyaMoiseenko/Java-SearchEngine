@@ -11,6 +11,7 @@ import by.moiseenko.javasearchengine.dto.response.SiteResponse;
 import by.moiseenko.javasearchengine.mapper.SiteMapper;
 import by.moiseenko.javasearchengine.service.SiteService;
 import by.moiseenko.javasearchengine.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class UserController {
     private final SiteService siteService;
 
     @PostMapping("/site")
-    public ResponseEntity<SiteResponse> siteToIndex(@RequestBody SiteRequest siteToIndexing,
+    public ResponseEntity<SiteResponse> siteToIndex(@RequestBody @Valid SiteRequest siteToIndexing,
                                                     @AuthenticationPrincipal UserPrincipal owner) {
         Site site = siteMapper.siteRequestToSite(siteToIndexing);
         site.setOwner(
