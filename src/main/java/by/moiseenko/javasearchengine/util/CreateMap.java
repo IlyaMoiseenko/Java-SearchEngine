@@ -90,7 +90,7 @@ public class CreateMap extends RecursiveTask<List<Page>> {
         for (Element elementHeader : headers) {
             Title title = Title
                     .builder()
-                    .name(elementHeader.text())
+                    .name(elementHeader.text().toLowerCase())
                     .page(page)
                     .build();
 
