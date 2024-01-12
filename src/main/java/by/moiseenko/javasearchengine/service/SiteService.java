@@ -12,6 +12,7 @@ import by.moiseenko.javasearchengine.exception.EntityNotFoundException;
 import by.moiseenko.javasearchengine.mapper.SiteMapper;
 import by.moiseenko.javasearchengine.repository.SiteRepository;
 import by.moiseenko.javasearchengine.util.CreateMap;
+import by.moiseenko.javasearchengine.util.LinksKeeper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +67,7 @@ public class SiteService {
         pages = pool.invoke(createMap);
 
         site.setPages(pages);
+        LinksKeeper.linksSet = Collections.synchronizedSet(new HashSet<>());
 
         return site;
     }
