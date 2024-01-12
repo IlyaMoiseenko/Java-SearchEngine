@@ -7,11 +7,9 @@ package by.moiseenko.javasearchengine.service;
 import by.moiseenko.javasearchengine.domain.IndexingStatus;
 import by.moiseenko.javasearchengine.domain.Page;
 import by.moiseenko.javasearchengine.domain.Site;
-import by.moiseenko.javasearchengine.domain.Title;
 import by.moiseenko.javasearchengine.dto.response.SiteResponse;
 import by.moiseenko.javasearchengine.exception.EntityNotFoundException;
 import by.moiseenko.javasearchengine.mapper.SiteMapper;
-import by.moiseenko.javasearchengine.repository.PageRepository;
 import by.moiseenko.javasearchengine.repository.SiteRepository;
 import by.moiseenko.javasearchengine.util.CreateMap;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +23,6 @@ import java.util.concurrent.ForkJoinPool;
 public class SiteService {
 
     private final SiteRepository siteRepository;
-    private final PageRepository pageRepository;
     private final SiteMapper siteMapper;
 
     public Site save(Site site) {
@@ -38,11 +35,12 @@ public class SiteService {
             setIndexingStatus(IndexingStatus.INDEXING, savedSite);
 
             // Запуск индексации сайта
-            List<Page> pages = indexing(savedSite);
-            pageRepository.saveAll(pages);
+            Site indexedSite = indexing(savedSite);
 
             // Установка статуса "Проиндексирован"
-            setIndexingStatus(IndexingStatus.INDEXED, savedSite);
+            setIndexingStatus(IndexingStatus.INDEXED, indexedSite);
+
+            siteRepository.save(indexedSite);
         }
 
         return savedSite;
@@ -63,7 +61,7 @@ public class SiteService {
         return sites.stream().map(siteMapper::siteToSiteResponse).toList();
     }
 
-    private List<Page> indexing(Site site) {
+    private Site indexing(Site site) {
         // Создаем список для записи карты сайта
         List<Page> pages;
 
@@ -71,7 +69,9 @@ public class SiteService {
         ForkJoinPool pool = new ForkJoinPool();
         pages = pool.invoke(createMap);
 
-        return pages;
+        site.setPages(pages);
+
+        return site;
     }
 
     private void setIndexingStatus(IndexingStatus status, Site site) {
