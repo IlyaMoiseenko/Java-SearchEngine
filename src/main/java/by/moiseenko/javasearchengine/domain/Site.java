@@ -34,7 +34,7 @@ public class Site {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User owner;
 
-    @OneToMany(mappedBy = "site")
+    @OneToMany(mappedBy = "site", cascade = CascadeType.ALL)
     private List<Page> pages;
 
     @Enumerated(EnumType.STRING)

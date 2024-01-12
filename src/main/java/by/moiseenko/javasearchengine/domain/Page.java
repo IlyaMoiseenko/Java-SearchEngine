@@ -24,7 +24,7 @@ public class Page {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "url", nullable = false, unique = true)
+    @Column(name = "url", nullable = false)
     private String url;
 
     @OneToMany(mappedBy = "page", cascade = CascadeType.ALL)

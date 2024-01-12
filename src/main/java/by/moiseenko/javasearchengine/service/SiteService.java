@@ -25,20 +25,16 @@ public class SiteService {
     private final SiteRepository siteRepository;
     private final SiteMapper siteMapper;
 
-    public Site save(Site site) {
+    public Site saveAndIndex(Site site) {
         site.setIndexingStatus(IndexingStatus.NOT_INDEXED);
         Site savedSite = siteRepository.save(site);
 
         if (savedSite != null) {
-
-            // Установка статуса "Индексируется"
             setIndexingStatus(IndexingStatus.INDEXING, savedSite);
 
             // Запуск индексации сайта
             Site indexedSite = indexing(savedSite);
-
-            // Установка статуса "Проиндексирован"
-            setIndexingStatus(IndexingStatus.INDEXED, indexedSite);
+            indexedSite.setIndexingStatus(IndexingStatus.INDEXED);
 
             siteRepository.save(indexedSite);
         }
@@ -61,7 +57,7 @@ public class SiteService {
         return sites.stream().map(siteMapper::siteToSiteResponse).toList();
     }
 
-    private Site indexing(Site site) {
+    public Site indexing(Site site) {
         // Создаем список для записи карты сайта
         List<Page> pages;
 
@@ -74,7 +70,7 @@ public class SiteService {
         return site;
     }
 
-    private void setIndexingStatus(IndexingStatus status, Site site) {
+    public void setIndexingStatus(IndexingStatus status, Site site) {
         site.setIndexingStatus(status);
         siteRepository.save(site);
     }

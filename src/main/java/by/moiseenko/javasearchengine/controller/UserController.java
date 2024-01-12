@@ -35,7 +35,7 @@ public class UserController {
                 userService.findByEmail(owner.getEmail())
         );
 
-        Site savedSiteToIndexing = siteService.save(site);
+        Site savedSiteToIndexing = siteService.saveAndIndex(site);
 
         return new ResponseEntity<>(
                 siteMapper.siteToSiteResponse(savedSiteToIndexing),
