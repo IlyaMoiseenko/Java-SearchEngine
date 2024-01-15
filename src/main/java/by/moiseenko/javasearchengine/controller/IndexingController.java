@@ -12,6 +12,10 @@ import by.moiseenko.javasearchengine.mapper.SiteMapper;
 import by.moiseenko.javasearchengine.repository.SiteRepository;
 import by.moiseenko.javasearchengine.service.SiteService;
 import by.moiseenko.javasearchengine.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +30,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/indexing")
 @RequiredArgsConstructor
+@Tag(name = "Indexing controller", description = "Controller for indexing site")
 public class IndexingController {
 
     private final SiteMapper siteMapper;
@@ -34,7 +39,10 @@ public class IndexingController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<List<SiteResponse>> indexing(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+    @Operation(summary = "The method for starting site indexing")
+    public ResponseEntity<List<SiteResponse>> indexing(
+            @Parameter(description = "The user whose sites will be indexed") @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
         List<SiteResponse> response = new ArrayList<>();
 
         User owner = userService.findByEmail(userPrincipal.getEmail());
