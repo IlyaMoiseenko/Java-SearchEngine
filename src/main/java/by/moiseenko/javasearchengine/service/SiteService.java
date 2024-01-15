@@ -14,30 +14,41 @@ import by.moiseenko.javasearchengine.repository.SiteRepository;
 import by.moiseenko.javasearchengine.util.CreateMap;
 import by.moiseenko.javasearchengine.util.LinksKeeper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@Transactional
 public class SiteService {
 
     private final SiteRepository siteRepository;
     private final SiteMapper siteMapper;
 
     public Site saveAndIndex(Site site) {
+        log.info("Start saving and indexing site");
+
         site.setIndexingStatus(IndexingStatus.NOT_INDEXED);
         Site savedSite = siteRepository.save(site);
+        log.info("Site with name: " + savedSite.getName() + "was saved");
 
         if (savedSite != null) {
             setIndexingStatus(IndexingStatus.INDEXING, savedSite);
 
             // Запуск индексации сайта
+            log.info("Indexing site start");
             Site indexedSite = indexing(savedSite);
             indexedSite.setIndexingStatus(IndexingStatus.INDEXED);
+            log.info("Indexing site completed");
 
+            log.info("Start save indexed site");
             siteRepository.save(indexedSite);
+            log.info("Indexed site was saved");
         }
 
         return savedSite;
